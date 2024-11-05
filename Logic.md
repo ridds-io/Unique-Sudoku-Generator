@@ -2,12 +2,18 @@
 
 The personalised sudoku generator works on four main functions:
 
-1. Setting difficulty of a sudoku
-2. Deciding the time required for a particular sudoku to be solved
-3. Generating a playable sudoku square of particular complexity
-4. Recording time taken by the user to solve
+1. Generating a playable sudoku square of particular complexity
+2. Recording time taken by the user to solve
+3. Assume certain time conventions for difficulty:
+   for example:
 
-   And then a feedback loop which will change the complexity setter before generation of sudoku
+      - easy level sudoku = 5 minutes
+      - medium level sudoku = 15 minutes
+      - difficult level sudoku = 30 minutes
+        
+4. Changing the difficulty of a sudoku based on solving time
+
+
 
 
 
