@@ -1,6 +1,6 @@
 # Logic
 
-### The personalised sudoku generator works on four main functions:
+## The personalised sudoku generator works on four main functions:
 
 <br>
 
@@ -15,8 +15,35 @@
         
 4. Changing the difficulty of a sudoku based on solving time
 
+<br>
 
+### Now looking into each of those steps further:
 
+<br>
+
+1. Generating a playable sudoku square of particular complexity
+
+   To implement a backtracking algorithm for generating a complete Sudoku grid, you can follow these steps:
+
+- Create a Grid: Start with an empty 9x9 grid.
+- Backtracking Function: Write a function that attempts to fill the grid by placing numbers 1-9 in each cell, checking if the placement is valid.
+- Validation: Ensure that each number placement follows Sudoku rules (no duplicates in rows, columns, or 3x3 subgrids).
+- Recursion: If a valid number is placed, recursively attempt to fill the next cell. If no valid number can be placed, backtrack by removing the last placed number and trying the next possibility.
+
+Here's a high-level pseudocode outline:
+
+```
+function solve(grid):
+    if grid is complete:
+        return true
+    for each number from 1 to 9:
+        if number is valid in current cell:
+            place number in cell
+            if solve(grid):
+                return true
+            remove number from cell
+    return false
+```
 
 
 
