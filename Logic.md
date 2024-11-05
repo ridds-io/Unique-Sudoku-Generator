@@ -3,7 +3,6 @@
 ### The personalised sudoku generator works on four main functions:
 
 <br>
-<br>
 
 1. Generating a playable sudoku square of particular complexity
 2. Recording time taken by the user to solve
