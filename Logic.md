@@ -2,11 +2,11 @@
 
 ## The personalised sudoku generator works on four main functions:
 
-<br>
+<Br>
 
 1. Generating a playable sudoku square of particular complexity
 2. Recording time taken by the user to solve
-3. Assume certain time conventions for difficulty:
+3. Determining difficulty catered solving time
    for example:
 
       - easy level sudoku = 5 minutes
@@ -21,7 +21,7 @@
 
 <br>
 
-1. Generating a playable sudoku square of particular complexity
+## 1. Generating a playable sudoku square of particular complexity
 
 - <B>Create a Grid:</B> Start with an empty 9x9 grid.
 - <B>Backtracking Function:</B> Write a function that attempts to fill the grid by placing numbers 1-9 in each cell, checking if the placement is valid.
@@ -43,7 +43,32 @@ function solve(grid):
     return false
 ```
 
+## 2. Recording time taken by the user to solve
 
+Tracking the solving time by using the time.time() function and subtracting current time from start time
 
+<Br>
 
+## 3. Determining difficulty catered solving time
+
+Start with some assumptions and then refine them based on user data. Here’s a possible strategy:
+
+<B>Initial Assumptions:</B> Start with a baseline time for each difficulty level. For example, assume an "easy" puzzle takes 5 minutes, a "medium" puzzle takes 10 minutes, and a "hard" puzzle takes 20 minutes.
+
+<B>Thresholds:</B> Set thresholds for what constitutes a quick or slow solve. For example:
+
+If the user solves an "easy" puzzle in less than 4 minutes, increase the difficulty.
+If the user takes more than 6 minutes, decrease the difficulty.
+
+<B>Adjust Difficulty:</B> Based on the solving time, adjust the number of pre-filled cells or the complexity of the puzzle for the next round.
+
+<Br>
+
+## 4. Changing the difficulty of a sudoku based on solving time
+
+<B>Number of Clues:</B> Easier puzzles have more pre-filled cells, while harder puzzles have fewer. You can adjust the number of clues based on the time taken to solve the previous puzzle.
+
+<B>Clue Distribution:</B> The placement of clues can also affect difficulty. For example, evenly distributed clues might make the puzzle easier, while clustering them in certain areas can make it harder.
+
+<B>Puzzle Generation Algorithm:</B> You can use different algorithms to generate puzzles of varying difficulty. Some algorithms are designed to create puzzles that require more advanced solving techniques.
 
