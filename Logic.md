@@ -1,55 +1,51 @@
 # Logic
 
-## The personalised sudoku generator works on four main functions:
+## The personalised sudoku generator works on five main functions:
 
 <Br>
 
-1. Generating a playable sudoku square of particular complexity
-2. Recording time taken by the user to solve
-3. Determining difficulty catered solving time
+1. Generating a fully solved sudoku square
+2. Making it a playable sudoku square of particular complexity
+3. Recording time taken by the user to solve
+4. Determining difficulty catered solving time
    for example:
 
       - easy level sudoku = 5 minutes
       - medium level sudoku = 15 minutes
       - difficult level sudoku = 30 minutes
         
-4. Changing the difficulty of a sudoku based on solving time
+5. Changing the difficulty of a sudoku based on solving time
 
-<br>
+<Br>
 
 ### Now looking into each of those steps further:
 
-<br>
+<Br>
 
-## 1. Generating a playable sudoku square of particular complexity
+## 1. Generating a fully solved sudoku square
 
-- <B>Create a Grid:</B> Start with an empty 9x9 grid.
-- <B>Backtracking Function:</B> Write a function that attempts to fill the grid by placing numbers 1-9 in each cell, checking if the placement is valid.
-- <B>Validation:</B> Ensure that each number placement follows Sudoku rules (no duplicates in rows, columns, or 3x3 subgrids).
+- <B>Initialize Grid:</B> Create an empty 9x9 grid.
+- <B>Assign First Row:</B> Shuffle and assign the numbers in the first row. This ensures that a different sudoku square is created every time.   
+- <B>Fill Grid:</B> Fill the grid by placing numbers 1-9 in each cell, checking if the placement is valid (ensure that each number placement follows Sudoku rules (no duplicates in rows, columns, or 3x3 subgrids).
 - <B>Recursion:</B> If a valid number is placed, recursively attempt to fill the next cell. If no valid number can be placed, backtrack by removing the last placed number and trying the next possibility.
 
-Here's a high-level pseudocode outline:
+<Br>
 
-```
-function solve(grid):
-    if grid is complete:
-        return true
-    for each number from 1 to 9:
-        if number is valid in current cell:
-            place number in cell
-            if solve(grid):
-                return true
-            remove number from cell
-    return false
-```
+## 2. Making the grid a playable sudoku square of particular complexity
 
-## 2. Recording time taken by the user to solve
+- <B>Clone:</B> Create a copy of the grid.
+- <B>Complexity Consideration:</B> Based on the desired difficulty of the sudoku, determine how many numbers to erase. 
+- <B>Erasing Numbers:</B> Erase numbers such that that particular answer sudoku square will have only one answer which is the generated grid.
+- <B>Solving time:</B> Display the question sudoku on the terminal, take user inputs and change the question grid (copy of answer grid), and if solved sudoku grid matches the answer sudoku then print SUDOKU SOLVED!, else if user wants to pause solving or exit then provide respective intructions and utilities. 
+<Br>
+
+## 3. Recording time taken by the user to solve
 
 Tracking the solving time by using the time.time() function and subtracting current time from start time
 
 <Br>
 
-## 3. Determining difficulty catered solving time
+## 4. Determining difficulty catered solving time
 
 Start with some assumptions and then refine them based on user data. Here’s a possible strategy:
 
@@ -64,7 +60,7 @@ If the user takes more than 6 minutes, decrease the difficulty.
 
 <Br>
 
-## 4. Changing the difficulty of a sudoku based on solving time
+## 5. Changing the difficulty of a sudoku based on solving time
 
 <B>Number of Clues:</B> Easier puzzles have more pre-filled cells, while harder puzzles have fewer. You can adjust the number of clues based on the time taken to solve the previous puzzle.
 
