@@ -16,10 +16,13 @@ def main():
     # sudoku = answered sudoku grid
     # clone = cloned sudoku grid in which we will delete values to make question sudoku
     if fill_grid(sudoku):
-        printing(N, sudoku)
+        #printing(N, sudoku)
         clone = sudoku
         
-
+    # printing the question
+    print("Time to solve the sudoku!")
+    print("Difficulty: easy")
+    printing(N, create_question_grid(clone))
 
 
 
@@ -107,7 +110,7 @@ def choose_random_number(start, end):
 def shuffle_first_row(arr):
     list_of_numbers = [1, 2, 3, 4, 5, 6 , 7 , 8 , 9]
     random.shuffle(list_of_numbers)
-    print(list_of_numbers)
+    #print(list_of_numbers)
     for i in range(len(list_of_numbers)):
         arr[0][i] = list_of_numbers[i]
     return arr
@@ -168,9 +171,52 @@ def fill_grid(arr):
 
 # judges time taken to solve and analyses required complexity for next sudoku
 # returns number of units to erase the value of in the solved grid
-def complexity():
-    # if this is the first time then, set complexity as easy
-    ...
+# if this is the first time then, set complexity as easy
+def complexity(units_erased, solving_time):
+    max_time_expected_easy = 5
+    max_time_expected_medium = 15
+    max_time_expected_hard = 30
+
+    # for easy level adjustments
+    if 45 <= units_erased < 55:
+        # if solved in less than expected time, complexity more
+        # hence units erased more
+        if solving_time < max_time_expected_easy:
+            units_erased += 4
+
+        # if solved in more than expected time, complexity less
+        # hence units erased less
+        if solving_time > max_time_expected_easy:
+            units_erased -= 3
+
+    # for medium level adjustments
+    if 55 <= units_erased < 65:
+        if solving_time < max_time_expected_medium:
+            units_erased += 3
+
+        if solving_time > max_time_expected_medium:
+            units_erased -= 2
+
+    # for easy level adjustments
+    if 65 <= units_erased <= 75:
+        
+        if solving_time < max_time_expected_hard:
+            units_erased += 2
+
+        if solving_time > max_time_expected_hard:
+            units_erased -= 1
+
+    return units_erased
+
+
+# takes the grid and randomly reassigns value 0 to {units_erased} cells
+def create_question_grid(arr, units_erased=45):
+    for _ in range(units_erased):
+        i = choose_random_number(0, 9)
+        j = choose_random_number(0, 9)
+        arr[i][j] = 0
+    return arr
+
 
 # prints the grid as a sudoku square
 def printing(N, arr):
