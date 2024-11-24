@@ -7,8 +7,8 @@ import pygame
 # N is the size of the 2D matrix (9*9)
 N = 9
 
-# Global variables
-x, z = 0, 0  # Coordinates for selected cell
+# coordinates for selected cell
+x, z = 0, 0
 start_time = None
 
 def main():
@@ -16,50 +16,21 @@ def main():
 
     # this generates an empty grid with shuffled first row
     sudoku = shuffle_first_row(initialize_grid(N))
-    if fill_grid(sudoku):
-        solution_grid = [row[:] for row in sudoku]  # Clone the solved grid
 
-    # Generate question grid
-    question_grid = create_question_grid(solution_grid, complexity(units_erased=45, solving_time=10))
-
-    printing(N, solution_grid)
-
-    # Pygame initialization
-    pygame.font.init()
-    Window = pygame.display.set_mode((500, 500))
-    pygame.display.set_caption("SUDOKU GAME by Ridds-io")
-    diff = 500 / 9
-    font = pygame.font.SysFont("comicsans", 20)
-    font1 = pygame.font.SysFont("comicsans", 40)
-    user_grid = [row[:] for row in question_grid]
-    running = True
-    selected = False
-    value = 0
-
-    
-    
-    '''
-    # this generates an empty grid with shuffled first row
-    sudoku = shuffle_first_row(initialize_grid(N))
-    
     # fill_grid function solves and edits sudoku variable to have filled grid
     # if it returns true, create a copy of the sudoku grid
-    # sudoku = answered sudoku grid
-    # clone = cloned sudoku grid in which we will delete values to make question sudoku
+    # solution_grid = answered sudoku grid
     if fill_grid(sudoku):
-        #printing(N, sudoku)
-        clone = sudoku
-        
-    # printing the question
-    
-    print("Time to solve the sudoku!")
-    print("Difficulty: easy")
+        solution_grid = [row[:] for row in sudoku]  
 
-    question_grid = create_question_grid(clone)
+    # generates the question grid
+    '''GENERATING A QUESTION GRID NEEDS TO BE WORKED ON TO INCORPORATE COMPLEXITY'''
+    question_grid = create_question_grid(solution_grid, complexity(units_erased=45, solving_time=10))
 
-    printing(N, question_grid)
-    
-    
+    '''THIS IS JUST FOR DEMO PURPOSES'''
+    '''SO AS TO SOLVE SUDOKU QUICKLY'''
+    printing(N, solution_grid)
+
     # incorporating pygame
     pygame.font.init()
 
@@ -68,53 +39,32 @@ def main():
 
     # set caption or title
     pygame.display.set_caption("SUDOKU GAME by Ridds-io")
-    x = 0
-    z = 0
 
     # size of each cell is 500/9
     diff = 500 / 9
-    value = 0
-
-    # question grid stored
-    defaultgrid = question_grid
-
     font = pygame.font.SysFont("comicsans", 20)
     font1 = pygame.font.SysFont("comicsans", 40)
 
-    # main loop of the game
-    flag=True  
+    # user_grid is the grid the user is going to be able to make changes to
+    user_grid = [row[:] for row in question_grid]
+    running = True
+    selected = False
+    value = 0
 
-    # flag to tell if the mouse has been clicked or a key has been pressed
-    flag1 = 0
-
-
-    flag2 = 0
-    rs = 0
-    error = 0
-
-
-    while flag:
-        # fills sudoku grid with da pink colour
-        Window.fill((255,182,193))
-        '''
-    # Start the timer
+    
+    # start the timer
     start_time = time.time()
 
     while running:
-        Window.fill((255, 182, 193))  # Pink background
+        # fill the sudoku with a pink background
+        Window.fill((255, 182, 193))  
+
+        # draw the sudoku grid on the window
+        drawlines(question_grid, Window, diff, font)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-              
-        #for event in pygame.event.get():
-        #   if event.type == pygame.QUIT:
-        #       flag = False
-
-        #   if event.type == pygame.MOUSEBUTTONDOWN:
-        #       flag1 = 1
-        #       pos = pygame.mouse.get_pos()
-        #      cord(pos, diff)
             if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     x, z = int(pos[0] // diff), int(pos[1] // diff)
@@ -152,13 +102,14 @@ def main():
                     value = 9 
                 if event.key == pygame.K_RETURN:
                     if is_solved(user_grid, solution_grid):
-                        time_taken_in_minutes = round(time.time() - start_time, 2) / 60
-                        print(f"Well Done! You have solved the sudoku in {time_taken_in_minutes:.2f} minutes!")
+                        print(f"Well Done! You have solved the sudoku in {time_tracker(start_time)}!")
                         running = False 
                 # if r key is pressed, a new sudoku grid should be generated 
                 if event.key == pygame.K_r:
                     user_grid = create_question_grid(solution_grid)
-                    start_time = time.time()  # Restart the timer
+                    
+                    # restart the timer for the new grid
+                    start_time = time.time()  
                 elif event.key == pygame.K_d:
                     user_grid = [row[:] for row in question_grid]
                 elif pygame.K_1 <= event.key <= pygame.K_9:
@@ -166,36 +117,7 @@ def main():
                     if selected and question_grid[z][x] == 0:
                             user_grid[z][x] = value
                             value = 0
-        ''' 
-        if flag2 == 1:
-            if solvegame(Window, defaultgrid, 0, 0) == False:
-                error = 1
-            else:
-                rs = 1
-            flag2 = 0   
-        if value != 0:           
-            fillvalue(value, Window, diff, font)
-            defaultgrid[int(x)][int(z)]= value
-            ---x---if validvalue(defaultgrid , int(x), int(y), value)== True:
-                defaultgrid[int(x)][int(y)]= value
-                flag1 = 0
-            else:
-                defaultgrid[int(x)][int(y)]= 0
-                raiseerror1(Window, font)---x---
-            value = 0   
-        
-        if error == 1:
-            raiseerror(Window, font) 
-        if rs == 1:
-            gameresult(Window, font)       
-        drawlines(defaultgrid, Window, diff, font) 
-        if flag1 == 1:
-            highlightbox(Window, diff)      
-        pygame.display.update()
-     
-   
-    pygame.quit()
-    '''
+
     # Draw grid and input
         draw_grid(Window, user_grid, diff, font)
         if selected:
@@ -210,15 +132,18 @@ def main():
 # STEP 1: GENERATING A FULLY SOLVED SUDOKU SQUARE -X-
 
 
-
 # measures the time taken by the user to solve the sudoku
-def time_tracker():
-    # generate sudoku grid
-    # only run time_tracker function after user starts filling in the grid
-    start = time.time()
-    # run the function to solve sudoku here
-    end = time.time()
-    time_taken = end - start
+# returns a formatted string containing time taken
+def time_tracker(start_time):
+    # ideally should only start tracking time function after user starts filling in the grid
+    # work on that later
+    end_time = time.time()
+    time_taken = round(end_time - start_time, 2) / 60
+    # formatting in hours and minutes
+    if time_taken > 60:
+        time_taken = f"{time_taken//60} hours and {time_taken-((time_taken//60)*60)} minutes"
+    else:
+        time_taken = f"{time_taken} minutes" 
     return time_taken
 
 # initialises the grid to have only 0s
@@ -425,26 +350,9 @@ def cord(pos, diff):
         pygame.draw.line(Window, (0, 0, 0), (x * diff-3, (z + k)*diff), (x * diff + diff + 3, (z + k)*diff), 7)
         pygame.draw.line(Window, (0, 0, 0), ( (x + k)* diff, z * diff ), ((x + k) * diff, z * diff + diff), 7) '''
 
-
 def highlight_cell(Window, x, z, diff):
-    """Highlight the selected cell."""
     pygame.draw.rect(Window, (0, 255, 0), (x * diff, z * diff, diff, diff), 3)
 
-# draws the sudoku grid
-'''def drawlines(defaultgrid, Window, diff, font):
-    for i in range (9):
-        for j in range (9):
-            if defaultgrid[i][j]!= 0:
-                pygame.draw.rect(Window, (255, 255, 0), (i * diff, j * diff, diff + 1, diff + 1))
-                text1 = font.render(str(defaultgrid[i][j]), 1, (0, 0, 0))
-                Window.blit(text1, (i * diff + 15, j * diff + 15))         
-    for l in range(10):
-        if l % 3 == 0 :
-            thick = 7
-        else:
-            thick = 1
-        pygame.draw.line(Window, (0, 0, 0), (0, l * diff), (500, l * diff), thick)
-        pygame.draw.line(Window, (0, 0, 0), (l * diff, 0), (l * diff, 500), thick)'''
 
 def draw_grid(Window, grid, diff, font):
     """Draw the sudoku grid on the Pygame window."""
@@ -489,49 +397,32 @@ def validvalue(m, k, l, value):
                 return False
     return True
 
-
-def solvegame(Window, defaultgrid, i, j):
-     
-    # l is the start position
-    l = [0, 0]
-
-    # if there are no empty locations, sudoku is solved
-    if (not find_empty_location(defaultgrid, l)):
-        return True
+# Update drawlines to highlight fixed numbers
+'''FIX THIS'''
+'''THE HIGHLIGHTED NUMBERS DON'T CHANGE WHEN R KEY IS PRESSED'''
+def drawlines(question_grid, Window, diff, font):
+    for i in range(9):
+        for j in range(9):
+            if question_grid[i][j] != 0:  # Check if the number is fixed
+                # Draw a light green background for fixed numbers
+                pygame.draw.rect(Window, (144, 238, 144), (j * diff, i * diff, diff + 1, diff + 1))
+                # Render the fixed number
+                text1 = font.render(str(question_grid[i][j]), 1, (0, 0, 0))  # Black text
+                Window.blit(text1, (j * diff + 15, i * diff + 15))
+            '''elif solution_grid[i][j] != 0:  # Check if the cell is filled by the user
+                # Draw a yellow background for user-entered numbers
+                pygame.draw.rect(Window, (255, 255, 0), (j * diff, i * diff, diff + 1, diff + 1))
+                # Render the user-entered number
+                text1 = font.render(str(solution_grid[i][j]), 1, (0, 0, 0))  # Black text
+                Window.blit(text1, (j * diff + 15, i * diff + 15))'''
     
-    # assigning row and col values
-    row = l[0]
-    col = l[1]
+    # Draw grid lines
+    for l in range(10):
+        thick = 7 if l % 3 == 0 else 1  # Thicker lines for 3x3 sub-grids
+        pygame.draw.line(Window, (0, 0, 0), (0, l * diff), (500, l * diff), thick)  # Horizontal lines
+        pygame.draw.line(Window, (0, 0, 0), (l * diff, 0), (l * diff, 500), thick)  # Vertical lines
 
-    pygame.event.pump()   
-
-    for num in range(1, 10):
-        if validvalue(defaultgrid, i, j, num)== True:
-            defaultgrid[i][j]= num
-            global x, z
-            x = i
-            z = j
-            Window.fill((255, 255, 255))
-            drawlines()
-            highlightbox()
-            pygame.display.update()
-            pygame.time.delay(20)
-            if solvegame(defaultgrid, i, j)== 1:
-                return True
-            else:
-                defaultgrid[i][j]= 0
-            Window.fill((0,0,0))
-         
-            drawlines()
-            highlightbox()
-            pygame.display.update()
-            pygame.time.delay(50)   
-    return False 
-
-def gameresult(Window, font):
-    text1 = font.render("game finished”, 1, (0, 0, 0)")
-    Window.blit(text1, (20, 570)) 
-        
+# check if the sudoku is solved
 def is_solved(user_grid, solution_grid):
     for i in range(len(user_grid)):
         for j in range(len(user_grid[i])):
