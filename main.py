@@ -45,11 +45,6 @@ def main():
     running = True
     selected = False
     value = 0
-
-    '''THIS IS JUST FOR DEMO PURPOSES'''
-    '''SO AS TO SOLVE SUDOKU QUICKLY'''
-    printing(N, solution_grid)
-    print(complexity(units_erased=45, solving_time=4))
     
     # start the timer
     start_time = time.time()
@@ -289,9 +284,6 @@ def fill_grid(arr):
 # STEP 2: MAKING THE GRID A PLAYABLE SUDOKU SQUARE OF PARTICULAR COMPLEXITY -X- 
 
 
-
-# clone created in the main function
-
 # judges time taken to solve and analyses required complexity for next sudoku
 # returns number of units to erase the value of in the solved grid
 # if this is the first time then, set complexity as easy
@@ -378,7 +370,6 @@ def draw_grid(Window, grid, diff, font):
 def fillvalue(value, Window, diff, font):
     text1 = font.render(str(value), 1, (0, 0, 0))
     Window.blit(text1, (x * diff + 15, z * diff + 15))
-
 
 # error functions to handle invalid user inputs
 # not required because code was updated
