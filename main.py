@@ -24,12 +24,7 @@ def main():
         solution_grid = [row[:] for row in sudoku]  
 
     # generates the question grid
-    '''GENERATING A QUESTION GRID NEEDS TO BE WORKED ON TO INCORPORATE COMPLEXITY'''
-    question_grid = create_question_grid(solution_grid, complexity(units_erased=45, solving_time=10))
-
-    '''THIS IS JUST FOR DEMO PURPOSES'''
-    '''SO AS TO SOLVE SUDOKU QUICKLY'''
-    printing(N, solution_grid)
+    question_grid = create_question_grid(solution_grid, complexity(units_erased=45, solving_time=4))
 
     # incorporating pygame
     pygame.font.init()
@@ -51,6 +46,10 @@ def main():
     selected = False
     value = 0
 
+    '''THIS IS JUST FOR DEMO PURPOSES'''
+    '''SO AS TO SOLVE SUDOKU QUICKLY'''
+    printing(N, solution_grid)
+    print(complexity(units_erased=45, solving_time=4))
     
     # start the timer
     start_time = time.time()
@@ -59,7 +58,7 @@ def main():
         # fill the sudoku with a pink background
         Window.fill((255, 182, 193))  
 
-        # draw the sudoku grid on the window
+        # highlight the clues given
         drawlines(question_grid, Window, diff, font)
 
         for event in pygame.event.get():
@@ -72,16 +71,16 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x-= 1
-                    flag1 = 1
+                    #flag1 = 1
                 if event.key == pygame.K_RIGHT:
                     x+= 1
-                    flag1 = 1
+                    #flag1 = 1
                 if event.key == pygame.K_UP:
                     z-= 1
-                    flag1 = 1
+                    #flag1 = 1
                 if event.key == pygame.K_DOWN:
                     z+= 1
-                    flag1 = 1   
+                    #flag1 = 1   
                 if event.key == pygame.K_1:
                     value = 1
                 if event.key == pygame.K_2:
@@ -100,18 +99,38 @@ def main():
                     value = 8
                 if event.key == pygame.K_9:
                     value = 9 
+
+                # to check if sudoku is solved
                 if event.key == pygame.K_RETURN:
                     if is_solved(user_grid, solution_grid):
                         print(f"Well Done! You have solved the sudoku in {time_tracker(start_time)}!")
                         running = False 
+                    else:
+                        print("No you haven't solved it yet :/ Keep trying!")
+                        running = True
+
                 # if r key is pressed, a new sudoku grid should be generated 
                 if event.key == pygame.K_r:
-                    user_grid = create_question_grid(solution_grid)
-                    
+                    sudoku = shuffle_first_row(initialize_grid(N))
+                    if fill_grid(sudoku):
+                        solution_grid = [row[:] for row in sudoku]
+                    question_grid = create_question_grid(solution_grid, complexity(units_erased=45, solving_time=4))
+                    user_grid = [row[:] for row in question_grid]
+
+                    printing(N, solution_grid)
+
                     # restart the timer for the new grid
-                    start_time = time.time()  
+                    start_time = time.time()
+
+                # if d key is pressed, all user inputs are erased
+                # goes back to the default question grid
                 elif event.key == pygame.K_d:
                     user_grid = [row[:] for row in question_grid]
+
+                # if 'a' letter key is pressed, all answers are displayed
+                elif event.key == pygame.K_a:
+                    user_grid = [row[:] for row in solution_grid]
+
                 elif pygame.K_1 <= event.key <= pygame.K_9:
                     value = event.key - pygame.K_0
                     if selected and question_grid[z][x] == 0:
@@ -136,14 +155,14 @@ def main():
 # returns a formatted string containing time taken
 def time_tracker(start_time):
     # ideally should only start tracking time function after user starts filling in the grid
-    # work on that later
+    # imporve that functionality later
     end_time = time.time()
     time_taken = round(end_time - start_time, 2) / 60
     # formatting in hours and minutes
     if time_taken > 60:
-        time_taken = f"{time_taken//60} hours and {time_taken-((time_taken//60)*60)} minutes"
+        time_taken = f"{time_taken//60} hours and {time_taken-((time_taken//60)*60):.2f} minutes"
     else:
-        time_taken = f"{time_taken} minutes" 
+        time_taken = f"{time_taken:.2f} minutes" 
     return time_taken
 
 # initialises the grid to have only 0s
@@ -276,33 +295,36 @@ def fill_grid(arr):
 # judges time taken to solve and analyses required complexity for next sudoku
 # returns number of units to erase the value of in the solved grid
 # if this is the first time then, set complexity as easy
+
+# min no. of clues to provide is 17 to be able to solve sudoku
+# thus max no. of clues to provide is 81 - 17 = 64
 def complexity(units_erased, solving_time):
     max_time_expected_easy = 5
     max_time_expected_medium = 15
     max_time_expected_hard = 30
 
     # for easy level adjustments
-    if 45 <= units_erased < 55:
+    if 45 <= units_erased < 54:
         # if solved in less than expected time, complexity more
         # hence units erased more
         if solving_time < max_time_expected_easy:
-            units_erased += 4
+            units_erased += 2
 
         # if solved in more than expected time, complexity less
         # hence units erased less
         if solving_time > max_time_expected_easy:
-            units_erased -= 3
+            units_erased -= 2
 
     # for medium level adjustments
-    if 55 <= units_erased < 65:
+    if 54 <= units_erased < 59:
         if solving_time < max_time_expected_medium:
             units_erased += 3
 
         if solving_time > max_time_expected_medium:
             units_erased -= 2
 
-    # for easy level adjustments
-    if 65 <= units_erased <= 75:
+    # for difficult level adjustments
+    if 59 <= units_erased <= 64:
         
         if solving_time < max_time_expected_hard:
             units_erased += 2
@@ -314,48 +336,35 @@ def complexity(units_erased, solving_time):
 
 
 # takes the grid and randomly reassigns value 0 to {units_erased} cells
-'''def create_question_grid(arr, units_erased=45):
-    for _ in range(units_erased):
+def create_question_grid(arr, units_erased=55):
+    question = [row[:] for row in arr]
+    count = 0 
+    while count != len(range(units_erased)):
         i = choose_random_number(0, 9)
         j = choose_random_number(0, 9)
-        arr[i][j] = 0
-    return arr'''
-
-def create_question_grid(arr, units_erased=45):
-    """Generate a question grid by erasing cells."""
-    question = [row[:] for row in arr]
-    count = 0
-    while count < units_erased:
-        i, j = random.randint(0, 8), random.randint(0, 8)
         if question[i][j] != 0:
             question[i][j] = 0
             count += 1
     return question
-
+ 
 
 
 # STEP 3: MAKING IT PLAYABLE ON PYGAME
 
 
-
+# this keeps a track of the current active position 
 def cord(pos, diff):
     global x
     x = pos[0]//diff
     global z
     z = pos[1]//diff
 
-# highlights the cell selected by the user
-'''def highlightbox(Window, diff):
-    for k in range(2):
-        pygame.draw.line(Window, (0, 0, 0), (x * diff-3, (z + k)*diff), (x * diff + diff + 3, (z + k)*diff), 7)
-        pygame.draw.line(Window, (0, 0, 0), ( (x + k)* diff, z * diff ), ((x + k) * diff, z * diff + diff), 7) '''
-
+# highlights the cell selected by the user with green border
 def highlight_cell(Window, x, z, diff):
     pygame.draw.rect(Window, (0, 255, 0), (x * diff, z * diff, diff, diff), 3)
 
-
+# draws the sudoku grid on the opened window
 def draw_grid(Window, grid, diff, font):
-    """Draw the sudoku grid on the Pygame window."""
     for i in range(9):
         for j in range(9):
             if grid[j][i] != 0:
@@ -370,6 +379,12 @@ def fillvalue(value, Window, diff, font):
     text1 = font.render(str(value), 1, (0, 0, 0))
     Window.blit(text1, (x * diff + 15, z * diff + 15))
 
+
+# error functions to handle invalid user inputs
+# not required because code was updated
+# now only performs actions according to specified keys
+# 0-9, return, r and d
+'''
 # raises error is number outside 1-9 is entered
 def raiseerror(Window, font):
     text1 = font.render("wrong!", 1, (0, 0, 0))
@@ -379,10 +394,12 @@ def raiseerror(Window, font):
 def raiseerror1(Window, font):
     text1 = font.render("wrong ! enter a valid key for the game", 1, (0, 0, 0))
     Window.blit(text1, (20, 570))
+'''
 
-# don't really need this function coz we already have the answer grid
-# need to just check if all values are filled
-# and once all values are filled, display "Sudoku Solved!"
+# this function only allowed numbers to be placed 
+# if they were acceptable for that position
+# not required
+'''
 def validvalue(m, k, l, value):
     for it in range(9):
         if m[k][it]== value:
@@ -396,40 +413,44 @@ def validvalue(m, k, l, value):
             if m[k][l]== value:
                 return False
     return True
-
-# Update drawlines to highlight fixed numbers
-'''FIX THIS'''
-'''THE HIGHLIGHTED NUMBERS DON'T CHANGE WHEN R KEY IS PRESSED'''
+'''
+    
+# highlights the clues given (fixed numbers)
 def drawlines(question_grid, Window, diff, font):
     for i in range(9):
         for j in range(9):
-            if question_grid[i][j] != 0:  # Check if the number is fixed
-                # Draw a light green background for fixed numbers
+            if question_grid[i][j] != 0:  
+                # gives the fixed numbers a light green background
                 pygame.draw.rect(Window, (144, 238, 144), (j * diff, i * diff, diff + 1, diff + 1))
-                # Render the fixed number
-                text1 = font.render(str(question_grid[i][j]), 1, (0, 0, 0))  # Black text
+                # render the fixed numbers
+                # window.blit is used to draw text "on top of" the background
+                # for layering basically
+                text1 = font.render(str(question_grid[i][j]), 1, (0, 0, 0)) 
                 Window.blit(text1, (j * diff + 15, i * diff + 15))
-            '''elif solution_grid[i][j] != 0:  # Check if the cell is filled by the user
-                # Draw a yellow background for user-entered numbers
-                pygame.draw.rect(Window, (255, 255, 0), (j * diff, i * diff, diff + 1, diff + 1))
-                # Render the user-entered number
-                text1 = font.render(str(solution_grid[i][j]), 1, (0, 0, 0))  # Black text
-                Window.blit(text1, (j * diff + 15, i * diff + 15))'''
-    
-    # Draw grid lines
-    for l in range(10):
-        thick = 7 if l % 3 == 0 else 1  # Thicker lines for 3x3 sub-grids
-        pygame.draw.line(Window, (0, 0, 0), (0, l * diff), (500, l * diff), thick)  # Horizontal lines
-        pygame.draw.line(Window, (0, 0, 0), (l * diff, 0), (l * diff, 500), thick)  # Vertical lines
+
+# checks if the user_grid is a valid solution
+def is_valid_solution(user_grid):
+    # use sets to find repition of numbers
+    # if repeated, length of set will be less than 9
+
+    # check rows and columns
+    for i in range(9):
+        if len(set(user_grid[i])) != 9 or len(set(row[i] for row in user_grid)) != 9:
+            return False
+    # check the 3x3 sub-grids
+    for box_row in range(0, 9, 3):
+        for box_col in range(0, 9, 3):
+            subgrid = [user_grid[row][col] for row in range(box_row, box_row + 3) for col in range(box_col, box_col + 3)]
+            if len(set(subgrid)) != 9:
+                return False
+    return True
 
 # check if the sudoku is solved
 def is_solved(user_grid, solution_grid):
-    for i in range(len(user_grid)):
-        for j in range(len(user_grid[i])):
-            # Check if any cell mismatches or is empty
-            if user_grid[i][j] != solution_grid[i][j]:
-                return False
-    return True
+    if user_grid == solution_grid or is_valid_solution(user_grid):
+        return True
+    else:
+        return False
 
 # prints the grid as a sudoku square
 def printing(N, arr):
