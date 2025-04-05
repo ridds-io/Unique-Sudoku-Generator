@@ -1,10 +1,15 @@
-# Personalised Sudoku Generator
-A sudoku generator that generates an easier or harder sudoku based on the time you took to solve the previous one
+# Unique Sudoku Generator
+A sudoku generator that generates a puzzle with exactly one solution based on the chosen difficulty level
 
+### Video Demo: 
+<URL HERE>
 
-## How it works:
+### How it works:
 
-1. Running the code will generate an easy level sudoku
-2. Time for the user to solve the sudoku!
-3. If user takes less than the expected time, a harder sudoku will be generated the next time.
-4. If user takes more than the expected time, an easier sudoku will be generated the next time.
+1. Running the code will open a sudoku welcome screen
+2. Enter user name and chose difficulty level
+3. A sudoku question grid of respective difficulty will open up
+
+### Further Functionalities:
+
+- 
