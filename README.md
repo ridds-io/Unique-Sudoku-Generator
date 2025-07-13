@@ -1,12 +1,12 @@
 # Unique Sudoku Generator
-A sudoku generator that generates a puzzle with exactly one solution based on the chosen difficulty level
+A feature-rich, interactive Sudoku puzzle game built with Python and Pygame. This game provides an engaging sudoku experience with multiple difficulty levels, timer functionality, pause/resume capability, and various user-friendly features.
 
 
-
-### Video Demo: 
+## Video Demo: 
 <URL HERE>
 
-## How it works:
+
+## How it works
 
 1. Running the code will open a sudoku welcome screen
 <img width="300" alt="Screenshot 2025-04-05 at 3 39 17 PM" src="https://github.com/user-attachments/assets/11831632-de06-4277-bd2c-d81b306a9ea5" />
@@ -25,6 +25,8 @@ A sudoku generator that generates a puzzle with exactly one solution based on th
 3. A sudoku question grid of respective difficulty will open up
 <img width="300" alt="Screenshot 2025-04-05 at 3 44 48 PM" src="https://github.com/user-attachments/assets/fb788e1c-e9f7-4f66-a7dc-bfc4d07e68c0" />
 
+## Project Overview
+<img width="938" height="747" alt="Screenshot 2025-07-12 at 12 20 23 PM" src="https://github.com/user-attachments/assets/287783e5-8c19-4b1a-a24c-89e7410d43ce" />
 
 ### Further Functionalities:
 
